@@ -11,6 +11,44 @@ Win32 control event handler for AutoIt
 - Move event: offset x, y.
 - Size event: size width, height.
 
+## Syntax
+
+- **Register event handler for control by its handle.**
+
+    ```au3
+    $event = CtrlEvent_Reg($handle)
+    ```
+
+- **Unregister event handler for control by its handle.**
+
+    ```au3
+    $result = CtrlEvent_UnReg($handle)
+    ```
+
+### Mouse event
+
+```au3
+$event.onMouse = func($e)
+```
+
+- `$e.x` -> x.
+- `$e.y` -> y.
+- `$e.state` -> 0 is left, 1 is just hovered, 2 is pressed, 3 is release.
+- `$e.isOver` -> mouse is over on control/window.
+
+### Keyboard event
+
+```au3
+$event.onKey = func($e)
+```
+
+- `$e.type` -> 0 is down, 1 is up.
+- `$e.which`-> virtual key code.
+- `$e.key` -> char of key.
+- `$e.ctrlKey` -> ctrl key is pressed.
+- `$e.altKey` -> alt key is pressed.
+- `$e.shiftKey` -> shift key is pressed.
+
 ### Example
 
 ```au3
