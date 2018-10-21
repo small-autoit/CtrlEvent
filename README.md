@@ -29,26 +29,26 @@ $Btn_event.onDrop = 'Btn_onDrop'
 GUISetState()
 
 while 1
-	switch GUIGetMsg()
-		case -3
-			CtrlEvent_UnReg($hBtn)
-			exit
+    switch GUIGetMsg()
+        case -3
+            CtrlEvent_UnReg($hBtn)
+            exit
 
-		case $Btn ; cannot use this
+        case $Btn ; cannot use this
 
-	endswitch
+    endswitch
 wend
 
 func Btn_onKey($e)
-	ConsoleWrite('type: ' & $e.type & ', which: ' & $e.which & ', key: ' & $e.key & _
-		', ctrl: ' & $e.ctrlKey & ', alt: ' & $e.altKey & ', shift: ' & $e.shiftKey & @crlf)
+    ConsoleWrite('type: ' & $e.type & ', which: ' & $e.which & ', key: ' & $e.key & _
+        ', ctrl: ' & $e.ctrlKey & ', alt: ' & $e.altKey & ', shift: ' & $e.shiftKey & @crlf)
 endfunc
 
 func Btn_onMouse($e)
-	ConsoleWrite('mouse state: ' & $e.state & ', isOver: ' & $e.isOver & ', position: ' & $e.x & ' - '& $e.y & @crlf)
+    ConsoleWrite('mouse state: ' & $e.state & ', isOver: ' & $e.isOver & ', position: ' & $e.x & ' - '& $e.y & @crlf)
 endfunc
 
 func Btn_onDrop($e)
-	ConsoleWrite('file counted: ' & $e.count & ', name: ' & $e.files & @crlf)
+    ConsoleWrite('file counted: ' & $e.count & ', name: ' & $e.files & @crlf)
 endfunc
 ```
