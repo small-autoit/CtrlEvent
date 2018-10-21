@@ -1,7 +1,7 @@
 # CtrlEvent
 Win32 control event handler for AutoIt
 
-### Features
+## Features
 
 - Hight performance.
 - Syntax like Javascript.
@@ -49,7 +49,7 @@ $event.onKey = func($e)
 - `$e.altKey` -> alt key is pressed.
 - `$e.shiftKey` -> shift key is pressed.
 
-### Example
+## Example
 
 ```au3
 #include 'CtrlEvent.au3'
