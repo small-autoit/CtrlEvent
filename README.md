@@ -68,7 +68,7 @@ endfunc
 ### Drog files event
 
 Called when file is droppred on control. <br>
-Control must have $WS_EX_ACCEPTFILES (0x00000010) extended style for use this event handler.
+Control must have **`$WS_EX_ACCEPTFILES`** (*0x00000010*) extended style for use this event handler.
 
 ```au3
 $event.onDrog = '__onDrog'
