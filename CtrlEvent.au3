@@ -199,7 +199,7 @@ func __CtrlEvent__SubProc($handle, $msg, $wp, $lp)
 					if ($self.timer == 0) then $self.timer = __CE_SetTimer($handle, 69, 30, null)
 
 					if ($self.click) then
-						if (iState == 2) then return 0
+						if ($self.state == 2) then return 0
 						$self.state = 2
 					else
 						if ($self.state == 1) then return 0
@@ -207,9 +207,9 @@ func __CtrlEvent__SubProc($handle, $msg, $wp, $lp)
 					endif
 				else
 					if (not $self.state) then return 0
-					iState = 0
+					$self.state = 0
 				endif
-				
+
 				local $e = dllstructcreate($__tagMouseEvent)
 				$e.isOver = $self.over
 				$e.state = $self.state
@@ -274,15 +274,15 @@ func __CtrlEvent__SubProc($handle, $msg, $wp, $lp)
 		case 0x0233
 			if ($self.onDrop) then
 
-				local $count = __CE_DragQueryFile($wp, 0xFFFFFFFF, null)
-				local $files = ''
+				local $files = null
+				local $count = __CE_DragQueryFile($wp, 0xFFFFFFFF, $files)
 
 				for $i = 0 to $count-1
 					local $name
 					__CE_DragQueryFile($wp, $i, $name)
 					$files &= $name & ($count == 1 ? '' : ';')
 				next
-				
+
 				local $e = dllstructcreate('wchar files[' & stringlen($files)+1 & '];uint count;')
 				$e.count = $count
 				$e.files = $files
@@ -436,7 +436,7 @@ func __CE_DragQueryFile($hDrop, $iFile, byref $sFile)
 		local $wcs = dllstructcreate('wchar val[' & $__MAXPATH & ']')
 		$ret = dllcall($__shell32, 'uint', 'DragQueryFileW', 'handle', $hDrop, 'uint', $iFile, 'ptr', dllstructgetptr($wcs, 1), 'uint', $__MAXPATH)
 		$sFile = $wcs.val
-	else 
+	else
 		$ret = dllcall($__shell32, 'uint', 'DragQueryFileW', 'handle', $hDrop, 'uint', $iFile, 'ptr', null, 'uint', $__MAXPATH)
 	endif
 
