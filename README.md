@@ -4,7 +4,7 @@ Win32 control event handler for AutoIt
 ## Features
 
 - Easy to use.
-- Hight performance.
+- High performance.
 - Syntax like Javascript.
 - Many events like mouse, keyboard, drop files, scroll, etc.
 
