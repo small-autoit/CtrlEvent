@@ -12,17 +12,19 @@ global $__tagCtrlEvent = _
 	'ptr oldproc;' 			& _
 	'int timer;bool click;' & _
 	'bool state;bool over;' & _
+	'char onFocus[50];'  	& _
 	'char onMove[50];'  	& _
 	'char onSize[50];'  	& _
 	'char onMouse[50];'  	& _
 	'char onKey[50];' 		& _
 	'char onDrop[50];'		& _
-	'char onActivate[50];'
+	'char onScroll[50];'
 
 global $__tagCtrlEvent_size = dllstructgetsize(dllstructcreate($__tagCtrlEvent))
 
 global $__tagKeyEvent = _
 	'bool type;'			& _
+	'bool isHotkey;'		& _
 	'bool altKey;'			& _
 	'bool ctrlKey;'			& _
 	'bool shiftKey;'		& _
@@ -48,6 +50,18 @@ global $__tagSizeEvent = _
 	'uint type;'			& _
 	'uint width;'			& _
 	'uint height;'
+
+global $__tagFocusEvent = _
+	'uint type;'			& _
+	'hwnd handle;'
+
+global $__tagScrollEvent = _
+	'int min;'				& _
+	'int max;'				& _
+	'uint page;'			& _
+	'int pos;'				& _
+	'bool type;'			& _
+	'bool action;'
 
 ; // Main functions
 ; ==================================================
@@ -118,6 +132,18 @@ func __CtrlEvent__SubProc($handle, $msg, $wp, $lp)
 
 			endif
 
+		case 0x0007, 0x0008
+			if ($self.onFocus) then
+
+				local $e = dllstructcreate($__tagFocusEvent)
+				$e.type = ($msg == 0x0007)
+				$e.handle = hwnd($wp)
+
+				call($self.onFocus, $e)
+				return 0
+
+			endif
+
 		case 0x0100, 0x0101
 			if ($self.onKey) then
 
@@ -125,7 +151,7 @@ func __CtrlEvent__SubProc($handle, $msg, $wp, $lp)
 
 				$e.which = $wp
 				$e.key = chr($wp)
-				$e.type = ($msg == 0x0100 ? 0 : 1)
+				$e.type = ($msg == 0x0100)
 				$e.shiftKey = (__CE_GetAsyncKeyState(0xa0) or __CE_GetAsyncKeyState(0xa1)) and 0x800
 				$e.ctrlKey = (__CE_GetAsyncKeyState(0xa2) or __CE_GetAsyncKeyState(0xa3)) and 0x800
 				$e.altKey = (__CE_GetAsyncKeyState(0xa4) or __CE_GetAsyncKeyState(0xa5)) and 0x800
@@ -187,8 +213,8 @@ func __CtrlEvent__SubProc($handle, $msg, $wp, $lp)
 				local $e = dllstructcreate($__tagMouseEvent)
 				$e.isOver = $self.over
 				$e.state = $self.state
-				$e.x = bitand($lp, 0xffff)
-				$e.y = bitshift($lp, 0xf)
+				$e.x = __CE_LoWord($lp)
+				$e.y = __CE_HiWord($lp)
 
 				call($self.onMouse, $e)
 
@@ -209,8 +235,8 @@ func __CtrlEvent__SubProc($handle, $msg, $wp, $lp)
 					local $e = dllstructcreate($__tagMouseEvent)
 					$e.isOver = $self.over
 					$e.state = $self.state
-					$e.x = bitand($lp, 0xffff)
-					$e.y = bitshift($lp, 0xf)
+					$e.x = __CE_LoWord($lp)
+					$e.y = __CE_HiWord($lp)
 
 					call($self.onMouse, $e)
 
@@ -230,9 +256,9 @@ func __CtrlEvent__SubProc($handle, $msg, $wp, $lp)
 
 					local $e = dllstructcreate($__tagMouseEvent)
 					$e.isOver = $self.over
-					$e.state = 3;$self.state
-					$e.x = bitand($lp, 0xffff)
-					$e.y = bitshift($lp, 0xf)
+					$e.state = $self.state+2
+					$e.x = __CE_LoWord($lp)
+					$e.y = __CE_HiWord($lp)
 
 					call($self.onMouse, $e)
 
@@ -247,6 +273,7 @@ func __CtrlEvent__SubProc($handle, $msg, $wp, $lp)
 
 		case 0x0233
 			if ($self.onDrop) then
+
 				local $count = __CE_DragQueryFile($wp, 0xFFFFFFFF, null)
 				local $files = ''
 
@@ -262,11 +289,61 @@ func __CtrlEvent__SubProc($handle, $msg, $wp, $lp)
 				__CE_DragFinish($wp)
 
 				call($self.onDrop, $e)
+
+			endif
+
+		case 0x0312
+			if ($self.onKey) then
+
+				local $e = dllstructcreate($__tagKeyEvent)
+				local $vk = __CE_LoWord($lp), $mod = __CE_HiWord($lp)
+
+				$e.isHotkey = 1
+				$e.which = $vk
+				$e.key = chr($vk)
+				$e.type = $wp
+				$e.shiftKey = ($mod == 0x4)
+				$e.ctrlKey = ($mod == 0x2)
+				$e.altKey = ($mod == 0x1)
+
+				call($self.onKey, $e)
+
+			endif
+
+		case 0x0114, 0x0115
+			if ($self.onScroll) then
+
+				local $inf = dllstructcreate('uint;uint;int;int;uint;int;int')
+				dllstructsetdata($inf, 2, 0x17)
+
+				__CE_GetScrollInfo(($lp ? $lp : $handle), ($msg == 0x0115), $inf)
+
+				local $e = dllstructcreate($__tagScrollEvent, dllstructgetptr($inf)+0x8)
+				$e.type = ($msg == 0x0115)
+				$e.action = __CE_LoWord($wp)
+
+				call($self.onScroll, $e)
+
 			endif
 
 	endswitch
 
 	return __CE_CallWindowProc($self.oldproc, $handle, $msg, $wp, $lp)
+endfunc
+
+; Operator
+; =========================
+
+func __CE_LoWord($p)
+	return bitand($p, 0xffff)
+endfunc
+
+func __CE_HiWord($p)
+	return bitshift($p, 0xf)
+endfunc
+
+func __CE_MakeParam($l, $h)
+	return bitor(__CE_LoWord($l), 0x10000 * __CE_LoWord($h))
 endfunc
 
 ; // User32 API
@@ -332,6 +409,18 @@ endfunc
 
 func __CE_KillTimer($handle, $id)
 	dllcall($__user32, 'bool', 'KillTimer', 'hwnd', $handle, 'uint', $id)
+endfunc
+
+func __CE_GetScrollInfo($handle, $nBar, $tScrollInfo)
+	dllcall($__user32, 'bool', 'GetScrollInfo', 'hwnd', $handle, 'int', $nBar, 'struct*', $tScrollInfo)
+endfunc
+
+func __CE_GetScrollRange($handle, $nBar, $lpiMin, $lpiMax)
+	dllcall($__user32, 'bool', 'GetScrollRange', 'hwnd', $handle, 'int', $nBar, 'ptr', $lpiMin, 'ptr', $lpiMax)
+endfunc
+
+func __CE_SetScrollInfo($handle, $nBar, $tScrollInfo, $bReDraw)
+	dllcall($__user32, 'bool', 'SetScrollInfo', 'hwnd', $handle, 'int', $nBar, 'struct*', $tScrollInfo, 'int', $bReDraw)
 endfunc
 
 ; // Shell32 API
