@@ -1,6 +1,6 @@
 #cs
 	$Name 			= 'CtrlEvent'
-	$Description 	= 'Add event handlers for window/control'
+	$Description 	= 'Win32 control event handler for AutoIt'
 	$AutoIt_version >= '3.3.0.0'
 	$Author 		= 'wuuyi123'
 	$Github 		= 'https://github.com/wy3/CtrlEvent'
