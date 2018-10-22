@@ -13,7 +13,7 @@ Win32 control event handler for AutoIt
 
 ## Event handler
 
-- **Register event handler for control by its handle.**
+**Register event handler for control by its handle.**
 
 ```au3
 $event = CtrlEvent_Reg($handle)
@@ -21,7 +21,7 @@ $event = CtrlEvent_Reg($handle)
     ; $event == 0 ; -> failed
 ```
 
-- **Unregister event handler for control by its handle.**
+**Unregister event handler for control by its handle.**
 
 ```au3
 $result = CtrlEvent_UnReg($handle)
@@ -30,6 +30,8 @@ $result = CtrlEvent_UnReg($handle)
 ```
 
 ### Mouse event
+
+Called when control is interacted by mouse.
 
 ```au3
 $event.onMouse = '__onMouse'
@@ -48,6 +50,8 @@ endfunc
 
 ### Keyboard event
 
+Called when keyboard on.
+
 ```au3
 $event.onKey = '__onKeyEvent'
 
@@ -64,21 +68,40 @@ func __onKeyEvent($e)
 endfunc
 ```
 
-### Drag files event
+### Drog files event
+
+Called when file is droppred on control.
 
 ```au3
-$event.onDrag = '__onDrag'
+$event.onDrog = '__onDrog'
 
 func __onDrag($e)
     $e.count ; -> number of files.
-    $e.files ; -> list of file name, splitted by semicolon for multiple files.
+    $e.files ; -> list of file name, splitted by semicolon for multiple files
              ;    e.g: 
              ;        count = 3
              ;        files = 'file_1.txt;file_2.exe;file_3.img'
 endfunc
 ```
 
+### Focus event
+
+Called when control is being focus or lost.
+
+```au3
+$event.onFucus = '__onFocus'
+
+func __onFocus($e)
+    $e.type   ; -> type of focus
+              ;    +> 0 : control was lost focus.
+              ;    +> 1 : control being focus on.
+    $e.handle ; -> handle (hwnd) of last control was lost/being focus.
+endfunc
+```
+
 ### Scroll event
+
+Called when control is scrolling.
 
 ```au3
 $event.onScroll = '__onScroll'
@@ -106,8 +129,38 @@ endfunc
 
 ```
 
+### Move event
 
+Called when control position just moved.
 
+```au3
+$event.onMove = '__onMove'
+
+func __onMove($e)
+    $e.x ; -> x offset (coord on parent client).
+    $e.y ; -> y offset (coord on parent client).
+endfunc
+```
+
+### Size event
+
+Called when control size just changed.
+
+```au3
+$event.onSize = '__onSize'
+
+func __onSize($e)
+    $e.type   ; -> type of resize
+              ;    +> 0 : the window has been restored.
+              ;    +> 1 : the window has been minimized.
+              ;    +> 2 : the window has been maximized.
+              ;    +> 3 : message is sent to all pop-up windows when 
+              ;           some other window has been restored to its former size.
+              ;    +> 4 : the window has been maximized.
+    $e.width  ; -> width.
+    $e.height ; -> height.
+endfunc
+```
 
 ## Example
 
