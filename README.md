@@ -15,40 +15,54 @@ Win32 control event handler for AutoIt
 
 - **Register event handler for control by its handle.**
 
-    ```au3
-    $event = CtrlEvent_Reg($handle)
-    ```
+```au3
+$event = CtrlEvent_Reg($handle)
+    ; IsDllSctruct($event) == 1 ; -> succeed, 0 is failed
+    ; $event == 0 ; -> failed
+```
 
 - **Unregister event handler for control by its handle.**
 
-    ```au3
-    $result = CtrlEvent_UnReg($handle)
-    ```
+```au3
+$result = CtrlEvent_UnReg($handle)
+    ; -> 1 : succeed
+    ; -> 0 : failed
+```
 
 ### Mouse event
 
 ```au3
-$event.onMouse = func($e)
-```
+$event.onMouse = '__onMouse'
 
-- `$e.x` -> x.
-- `$e.y` -> y.
-- `$e.state` -> 0 is left, 1 is just hovered, 2 is pressed, 3 is release.
-- `$e.isOver` -> mouse is over on control/window.
+func __onMouse($e)
+    $e.x      ; -> mouse x pos on control.
+    $e.y      ; -> mouse y pos on control.
+    $e.state  ; -> state of mouse
+              ;    +> 0 : left.
+              ;    +> 1 : just hovered.
+              ;    +> 2 : pressed.
+              ;    +> 3 : clicked and just release.
+    $e.isOver ; -> is mouse over on control.
+endfunc
+```
 
 ### Keyboard event
 
 ```au3
-$event.onKey = func($e)
-```
+$event.onKey = '__onKeyEvent'
 
-- `$e.type` -> 0 is down, 1 is up.
-- `$e.which`-> virtual key code.
-- `$e.key` -> char of key.
-- `$e.isHotkey` -> key pressed is a hotkey
-- `$e.ctrlKey` -> ctrl key is pressed.
-- `$e.altKey` -> alt key is pressed.
-- `$e.shiftKey` -> shift key is pressed.
+func __onKeyEvent($e)
+    $e.type     ; -> state of key
+                ;    +> 0 : key is down.
+                ;    +> 1 : key is up.
+    $e.which    ; -> virtual key code.
+    $e.key      ; -> char of key.
+    $e.isHotkey ; -> key pressed is a hotkey ($e.type be down).
+    $e.ctrlKey  ; -> ctrl key is pressed.
+    $e.altKey   ; -> alt key is pressed.
+    $e.shiftKey ; -> shift key is pressed.
+endfunc
+```
 
 ### Scroll event
 
