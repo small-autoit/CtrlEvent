@@ -64,6 +64,20 @@ func __onKeyEvent($e)
 endfunc
 ```
 
+### Drag files event
+
+```au3
+$event.onDrag = '__onDrag'
+
+func __onDrag($e)
+    $e.count ; -> number of files.
+    $e.files ; -> list of file name, splitted by semicolon for multiple files.
+             ;    e.g: 
+             ;        count = 3
+             ;        files = 'file_1.txt;file_2.exe;file_3.img'
+endfunc
+```
+
 ### Scroll event
 
 ```au3
