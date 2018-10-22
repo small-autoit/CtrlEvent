@@ -11,7 +11,7 @@ Win32 control event handler for AutoIt
 - Move event: offset x, y.
 - Size event: size width, height.
 
-## Syntax
+## Event handler
 
 - **Register event handler for control by its handle.**
 
@@ -45,9 +45,41 @@ $event.onKey = func($e)
 - `$e.type` -> 0 is down, 1 is up.
 - `$e.which`-> virtual key code.
 - `$e.key` -> char of key.
+- `$e.isHotkey` -> key pressed is a hotkey
 - `$e.ctrlKey` -> ctrl key is pressed.
 - `$e.altKey` -> alt key is pressed.
 - `$e.shiftKey` -> shift key is pressed.
+
+### Scroll event
+
+```au3
+$event.onScroll = '__onScroll'
+
+func __onScroll($e)
+    $e.min    ; -> minimium position.
+    $e.max    ; -> maximium position.
+    $e.page   ; -> range page of scrolling.
+    $e.pos    ; -> position of scrolling.
+    $e.type   ; -> type of scrollbar
+              ;    +> 0 : horizontal scrollbar.
+              ;    +> 1 : vertical scrollbar.    
+    $e.action ; -> user's action on scrollbar
+              ;    +> 0 : scrolls left/top by one unit.
+              ;    +> 1 : scrolls right/down by one unit.
+              ;    +> 2 : scrolls left/top by the width/height of the window.
+              ;    +> 3 : scrolls right/down by the width/height of the window.
+              ;    +> 4 : the user has dragged the scroll box (thumb) and released the mouse button
+              ;    +> 5 : the user is dragging the scroll box; 
+              ;        this message is sent repeatedly until the user releases the mouse button.
+              ;    +> 6 : scrolls to the upper left/top.
+              ;    +> 7 : scrolls to the upper right/bottom.
+              ;    +> 8 : ends scroll.
+endfunc
+
+```
+
+
+
 
 ## Example
 
