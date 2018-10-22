@@ -1,3 +1,12 @@
+#cs
+	$Name 			= 'CtrlEvent'
+	$Description 	= 'Add event handlers for window/control'
+	$AutoIt_version >= '3.3.0.0'
+	$Author 		= 'wuuyi123'
+	$Github 		= 'https://github.com/wy3/CtrlEvent'
+	$isStable 		= 'in progessing...''
+#ce
+
 global $__user32 = dllopen('user32.dll')
 global $__shell32 = dllopen('shell32.dll')
 global $__msvcrt = dllopen('msvcrt.dll')
