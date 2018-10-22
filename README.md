@@ -3,15 +3,12 @@ Win32 control event handler for AutoIt
 
 ## Features
 
+- Easy to use.
 - Hight performance.
 - Syntax like Javascript.
-- Mouse event: hover, press, release; position.
-- Keyboard event: key code, character, control key is pressed, key is down/up.
-- Drop files event: file counter, file name.
-- Move event: offset x, y.
-- Size event: size width, height.
+- Many events like mouse, keyboard, drop files, scroll, etc.
 
-## Event handler
+## Event handlers
 
 **Register event handler for control by its handle.**
 
