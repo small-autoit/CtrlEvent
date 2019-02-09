@@ -161,9 +161,9 @@ func __CtrlEvent__SubProc($handle, $msg, $wp, $lp)
                 $e.which = $wp
                 $e.key = chr($wp)
                 $e.type = ($msg == 0x0100)
-                $e.shiftKey = (__CE_GetAsyncKeyState(0xa0) or __CE_GetAsyncKeyState(0xa1)) and 0x800
-                $e.ctrlKey = (__CE_GetAsyncKeyState(0xa2) or __CE_GetAsyncKeyState(0xa3)) and 0x800
-                $e.altKey = (__CE_GetAsyncKeyState(0xa4) or __CE_GetAsyncKeyState(0xa5)) and 0x800
+                $e.shiftKey = (__CE_GetAsyncKeyState(0xa0) or __CE_GetAsyncKeyState(0xa1)) and 0x8000
+                $e.ctrlKey = (__CE_GetAsyncKeyState(0xa2) or __CE_GetAsyncKeyState(0xa3)) and 0x8000
+                $e.altKey = (__CE_GetAsyncKeyState(0xa4) or __CE_GetAsyncKeyState(0xa5)) and 0x8000
 
                 call($self.onKey, $e)
                 return 0
